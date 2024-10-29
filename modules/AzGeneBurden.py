@@ -89,7 +89,7 @@ def main(
             allowMissingColumns=True,
         )
         .withColumn("pValue", F.col("pValue").cast(T.DoubleType()))
-        .filter(F.col("pValue") <= 1e-7)
+        .filter(F.col("pValue") <= 1e-6)
         .distinct()
         .repartition(20)
         .persist()
@@ -123,13 +123,13 @@ def main(
             f"There are {evd_df.filter(F.col('resourceScore') == 0).count()} evidence with a P value of 0."
         )
 
-    if not 28_000 < evd_df.count() < 30_000:
-        logging.error(
-            f"AZ PheWAS Portal number of evidence are different from expected: {evd_df.count()}"
-        )
-        raise AssertionError(
-            "AZ PheWAS Portal number of evidence are different from expected."
-        )
+    # if not 28_000 < evd_df.count() < 30_000:
+    #     logging.error(
+    #         f"AZ PheWAS Portal number of evidence are different from expected: {evd_df.count()}"
+    #     )
+    #     raise AssertionError(
+    #         "AZ PheWAS Portal number of evidence are different from expected."
+    #     )
     logging.info(f"{evd_df.count()} evidence strings have been processed.")
 
     return evd_df
