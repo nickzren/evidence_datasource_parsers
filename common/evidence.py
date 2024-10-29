@@ -80,6 +80,36 @@ def write_evidence_strings(evidence, output_file):
         os.rename(os.path.join(tmp_dir_name, json_chunks[0]), output_file)
 
 
+def write_evidence_strings_tsv(evidence: DataFrame, output_file: str):
+    """Exports the table to a TSV file containing the evidence strings."""
+    # Convert array columns to strings, handling nested structures if necessary
+    for column, dtype in evidence.dtypes:
+        if dtype.startswith("array<struct"):
+            # Handle array of structs by converting each struct to a string and joining
+            evidence = evidence.withColumn(
+                column,
+                f.expr(f"array_join(transform({column}, x -> concat(x.url, ': ', x.niceName)), ', ')")
+            )
+        elif dtype.startswith("array"):
+            # Handle standard arrays of strings
+            evidence = evidence.withColumn(column, f.expr(f"array_join({column}, ', ')"))
+
+    with tempfile.TemporaryDirectory() as tmp_dir_name:
+        (
+            evidence.coalesce(1)
+            .write.format("csv")
+            .option("header", "true")
+            .option("delimiter", "\t")
+            .mode("overwrite")
+            .save(tmp_dir_name)
+        )
+        tsv_chunks = [f for f in os.listdir(tmp_dir_name) if f.endswith(".csv")]
+        assert (
+            len(tsv_chunks) == 1
+        ), f"Expected one TSV file, but found {len(tsv_chunks)}."
+        os.rename(os.path.join(tmp_dir_name, tsv_chunks[0]), output_file)
+        
+
 def initialize_sparksession() -> SparkSession:
     """Initialize spark session."""
 

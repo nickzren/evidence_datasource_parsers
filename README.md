@@ -2,6 +2,31 @@
 
 This repository contains a collection of modules which generate evidence for several internal data sources (“internal” meaning that the code is maintained by the data team; the data itself usually comes from sources outside Open Targets).
 
+## How to run Gene Burden Locally on Mac
+
+Download all gene burden data to ~/Downloads/open-target/gene-burden.
+
+```bash
+cd evidence_datasource_parsers
+
+mamba env create -f environment.yml
+
+conda activate evidence_datasource_parsers
+
+export DATA_DIR=~/Downloads/open-target/gene-burden
+
+PYTHONPATH=$(pwd) python modules/GeneBurden.py \
+    --az_binary_data "$DATA_DIR/azphewas/azphewas-com-470k-phewas-binary" \
+    --az_quant_data "$DATA_DIR/azphewas/azphewas-com-470k-phewas-quantitative" \
+    --az_genes_links "$DATA_DIR/azphewas/azphewas_com_genes_UK_Biobank_470k.csv" \
+    --az_phenotypes_links "$DATA_DIR/azphewas/azphewas_com_phenotypes_UK_Biobank_470k.csv" \
+    --curated_data "$DATA_DIR/curated_evidence.tsv" \
+    --genebass_data "$DATA_DIR/genebass/" \
+    --finngen_data "$DATA_DIR/finngen/finngen_R11_lof.txt" \
+    --finngen_manifest "$DATA_DIR/finngen/finngen_manifest.json" \
+    --output gene_burden_output.tsv
+```
+
 ## How to set up and update the environment
 
 The file `requirements.txt` contains the **direct** dependencies only with their exact versions pinned. Only this file should be edited directly.

@@ -1,0 +1,19 @@
+name: evidence_datasource_parsers
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8
+  - gcsfs
+  - pyspark
+  - pyyaml
+  - psutil
+  - pandas
+  - numpy
+  - requests
+  - openpyxl
+  - pip:
+      - retry2
+      - pronto
+      - ontoma
+      - opentargets-validator
