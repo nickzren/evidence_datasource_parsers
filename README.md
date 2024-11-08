@@ -13,8 +13,34 @@ mamba env create -f environment.yml
 
 conda activate evidence_datasource_parsers
 
+# Set the base data directory path
 export DATA_DIR=~/Downloads/open-target/gene-burden
 
+# AZ gene burden only
+PYTHONPATH=$(pwd) python modules/AzGeneBurden.py \
+    --az_binary_data "$DATA_DIR/azphewas/azphewas-com-470k-phewas-binary" \
+    --az_quant_data "$DATA_DIR/azphewas/azphewas-com-470k-phewas-quantitative" \
+    --az_genes_links "$DATA_DIR/azphewas/azphewas_com_genes_UK_Biobank_470k.csv" \
+    --az_phenotypes_links "$DATA_DIR/azphewas/azphewas_com_phenotypes_UK_Biobank_470k.csv" \
+    --output gene_burden_azphewas.tsv
+
+# GeneBass gene burden only
+PYTHONPATH=$(pwd) python modules/GenebassGeneBurden.py \
+    --genebass_data "$DATA_DIR/genebass/" \
+    --output gene_burden_genebass.tsv
+
+# Curated gene burden only
+PYTHONPATH=$(pwd) python modules/CuratedGeneBurden.py \
+    --curated_data "$DATA_DIR/curated_evidence.tsv" \
+    --output gene_burden_curated.tsv
+
+# FinnGen gene burden only
+PYTHONPATH=$(pwd) python modules/FinngenGeneBurden.py \
+    --finngen_data "$DATA_DIR/finngen/finngen_R11_lof.txt" \
+    --finngen_manifest "$DATA_DIR/finngen/finngen_manifest.json" \
+    --output gene_burden_finngen.tsv
+
+# All gene burden
 PYTHONPATH=$(pwd) python modules/GeneBurden.py \
     --az_binary_data "$DATA_DIR/azphewas/azphewas-com-470k-phewas-binary" \
     --az_quant_data "$DATA_DIR/azphewas/azphewas-com-470k-phewas-quantitative" \
@@ -24,7 +50,7 @@ PYTHONPATH=$(pwd) python modules/GeneBurden.py \
     --genebass_data "$DATA_DIR/genebass/" \
     --finngen_data "$DATA_DIR/finngen/finngen_R11_lof.txt" \
     --finngen_manifest "$DATA_DIR/finngen/finngen_manifest.json" \
-    --output gene_burden_output.tsv
+    --output gene_burden_all.tsv
 ```
 
 ## How to set up and update the environment
