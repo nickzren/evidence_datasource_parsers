@@ -13,7 +13,7 @@ import pyspark.sql.types as T
 from common.evidence import (
     initialize_sparksession,
     import_trait_mappings,
-    write_evidence_strings,
+    write_evidence_strings_tsv
 )
 
 METHOD_DESC = {
@@ -345,5 +345,5 @@ if __name__ == "__main__":
         az_phenotypes_links=args.az_phenotypes_links,
     )
 
-    write_evidence_strings(evd_df, args.output)
+    write_evidence_strings_tsv(evd_df, args.output)
     logging.info(f"Evidence strings have been saved to {args.output}. Exiting.")
